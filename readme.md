@@ -1,20 +1,51 @@
-flowchart TD
-    A[Customer selects items] --> B[Sales clerk enters sale in POS]
-    B --> C{Payment method?}
-    C --> D[Cash]
-    C --> E[Credit card]
+```mermaid
+graph LR
 
-    D --> F[Accept cash and complete sale]
-    F --> G[Record sale in system]
+  %% CUSTOMER
+  subgraph Customer
+    A[Selects items to purchase]
+  end
 
-    E --> H[Send card for authorization]
-    H --> I{Card approved?}
-    I -->|Yes| J[Complete sale and issue receipt]
-    J --> G[Record sale in system]
-    I -->|No| K[Cancel sale and return items]
+  %% SALES CLERK
+  subgraph Sales_Clerk
+    B[Receives items from customer]
+    C[Enters sale in POS system]
+    D[Prompts for payment method]
+    E{Payment type?}
+    F[Accept cash]
+    G[Submit card for authorization]
+    H{Card approved?}
+    I[Complete sale & issue receipt]
+    J[Cancel sale & return items]
+  end
 
-    %% End-of-day cash handling
-    G --> L[End of day: Sales manager tallies cash]
-    L --> M[Cashier prepares deposit ticket]
-    M --> N[Courier transports deposit to bank]
-    N --> O[Bank receives deposit]
+  %% SALES MANAGER
+  subgraph Sales_Manager
+    K[Tallies cash end of day]
+    L[Bundles cash for cashier]
+  end
+
+  %% CASHIER
+  subgraph Cashier
+    M[Receives cash from manager]
+    N[Prepares bank deposit ticket]
+    O[Hands deposit to courier]
+  end
+
+  %% COURIER
+  subgraph Courier
+    P[Transports deposit to bank]
+  end
+
+  %% BANK
+  subgraph Bank
+    Q[Bank accepts deposit]
+  end
+
+  %% FLOW
+  A --> B --> C --> D --> E
+  E -->|Cash| F --> K
+  E -->|Credit card| G --> H
+  H -->|Yes| I --> K
+  H -->|No| J --> K
+  K --> L --> M --> N --> O --> P --> Q
